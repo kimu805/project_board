@@ -24,13 +24,6 @@
   </div>
 
   <div>
-    <label class="inline-flex items-center gap-3 cursor-pointer group">
-      <%= form.check_box :client_visible, class: "w-4 h-4 rounded bg-navy-900 border border-white/10 text-warm-500 focus:ring-warm-500/40 focus:ring-2 focus:ring-offset-0 cursor-pointer" %>
-      <span class="text-sm text-gray-300 group-hover:text-white transition-colors">クライアント名を一覧・詳細に表示する</span>
-    </label>
-  </div>
-
-  <div>
     <%= form.label :unit_price, "単価（円）", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
     <%= form.number_field :unit_price, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:unit_price].any? ? "border-red-500/40" : "border-white/10"], placeholder: "例：600000", step: 10000 %>
   </div>

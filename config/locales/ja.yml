@@ -11,7 +11,6 @@ ja:
         start_date: 開始日
         end_date: 終了日
         tech_stack: 技術スタック
-        client_visible: クライアント名を表示
         status: 状態
     errors:
       messages:

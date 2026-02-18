@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_18_112758) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_18_114245) do
   create_table "projects", force: :cascade do |t|
     t.string "name"
     t.string "client_name"
@@ -22,6 +22,5 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_18_112758) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "client_visible", default: false, null: false
   end
 end
