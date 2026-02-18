@@ -1,0 +1,14 @@
+<% content_for :title, "案件編集" %>
+
+<div class="max-w-2xl">
+  <h1 class="font-bold text-2xl text-gray-800 mb-6">案件編集</h1>
+
+  <div class="bg-white shadow-sm rounded-lg p-6">
+    <%= render "form", project: @project %>
+  </div>
+
+  <div class="mt-4 flex space-x-4">
+    <%= link_to "詳細に戻る", @project, class: "text-gray-600 hover:text-gray-800" %>
+    <%= link_to "一覧に戻る", projects_path, class: "text-gray-600 hover:text-gray-800" %>
+  </div>
+</div>

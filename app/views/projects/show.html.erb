@@ -1,0 +1,57 @@
+<% content_for :title, @project.name %>
+
+<div class="max-w-2xl">
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+  <% end %>
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="font-bold text-2xl text-gray-800"><%= @project.name %></h1>
+    <span class="px-3 py-1 text-sm font-medium rounded-full <%= status_badge_class(@project) %>">
+      <%= status_label(@project) %>
+    </span>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <dl class="divide-y divide-gray-200">
+      <div class="px-6 py-4 grid grid-cols-3">
+        <dt class="font-medium text-gray-500">クライアント名</dt>
+        <dd class="col-span-2 text-gray-800"><%= @project.client_name %></dd>
+      </div>
+      <div class="px-6 py-4 grid grid-cols-3">
+        <dt class="font-medium text-gray-500">単価</dt>
+        <dd class="col-span-2 text-gray-800"><%= formatted_unit_price(@project.unit_price) %></dd>
+      </div>
+      <div class="px-6 py-4 grid grid-cols-3">
+        <dt class="font-medium text-gray-500">勤務形態</dt>
+        <dd class="col-span-2 text-gray-800"><%= work_style_label(@project) %></dd>
+      </div>
+      <div class="px-6 py-4 grid grid-cols-3">
+        <dt class="font-medium text-gray-500">開始日</dt>
+        <dd class="col-span-2 text-gray-800"><%= @project.start_date %></dd>
+      </div>
+      <div class="px-6 py-4 grid grid-cols-3">
+        <dt class="font-medium text-gray-500">終了日</dt>
+        <dd class="col-span-2 text-gray-800"><%= @project.end_date || "—" %></dd>
+      </div>
+      <div class="px-6 py-4 grid grid-cols-3">
+        <dt class="font-medium text-gray-500">技術スタック</dt>
+        <dd class="col-span-2 text-gray-800">
+          <% if @project.tech_stack.present? %>
+            <% @project.tech_stack.split(",").each do |tech| %>
+              <span class="inline-block bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded mr-1 mb-1"><%= tech.strip %></span>
+            <% end %>
+          <% else %>
+            —
+          <% end %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="mt-6 flex space-x-3">
+    <%= link_to "編集", edit_project_path(@project), class: "rounded-md px-4 py-2 bg-gray-100 hover:bg-gray-200 font-medium text-gray-700" %>
+    <%= link_to "一覧に戻る", projects_path, class: "rounded-md px-4 py-2 bg-gray-100 hover:bg-gray-200 font-medium text-gray-700" %>
+    <%= button_to "削除", @project, method: :delete, form_class: "inline-block", class: "rounded-md px-4 py-2 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "この案件を削除しますか？" } %>
+  </div>
+</div>

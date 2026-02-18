@@ -1,0 +1,32 @@
+ja:
+  activerecord:
+    models:
+      project: 案件
+    attributes:
+      project:
+        name: 案件名
+        client_name: クライアント名
+        unit_price: 単価
+        work_style: 勤務形態
+        start_date: 開始日
+        end_date: 終了日
+        tech_stack: 技術スタック
+        status: 状態
+    errors:
+      messages:
+        blank: を入力してください
+        not_a_number: は数値で入力してください
+        greater_than_or_equal_to: は%{count}以上の値にしてください
+  enums:
+    project:
+      work_style:
+        on_site: 常駐
+        remote: リモート
+      status:
+        upcoming: 参画前
+        active: 参画中
+        completed: 終了
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      blank: を入力してください
