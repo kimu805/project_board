@@ -11,6 +11,7 @@ ja:
         start_date: 開始日
         end_date: 終了日
         tech_stack: 技術スタック
+        client_visible: クライアント名を表示
         status: 状態
     errors:
       messages:
@@ -20,8 +21,12 @@ ja:
   enums:
     project:
       work_style:
-        on_site: 常駐
-        remote: リモート
+        full_onsite: フル出社
+        remote_1day: 週1リモート
+        remote_2days: 週2リモート
+        remote_3days: 週3リモート
+        remote_4days: 週4リモート
+        full_remote: フルリモート
       status:
         upcoming: 参画前
         active: 参画中

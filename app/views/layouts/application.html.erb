@@ -10,25 +10,56 @@
 
     <%= yield :head %>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50">
-    <header class="bg-white shadow-sm">
-      <div class="container mx-auto px-5 py-4 flex justify-between items-center">
-        <%= link_to "Project Board", root_path, class: "font-bold text-xl text-gray-800" %>
-        <%= link_to "案件一覧", projects_path, class: "text-gray-600 hover:text-gray-800" %>
+  <body class="bg-navy-950 font-body text-gray-200 min-h-screen">
+    <%# Subtle grain overlay %>
+    <div class="fixed inset-0 pointer-events-none opacity-[0.03] z-50" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E');"></div>
+
+    <header class="border-b border-white/5 relative">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <%= link_to root_path, class: "group flex items-center gap-3" do %>
+            <div class="w-8 h-8 bg-gradient-to-br from-warm-400 to-warm-600 rounded-lg flex items-center justify-center shadow-lg shadow-warm-500/20">
+              <span class="text-navy-950 font-display font-bold text-sm">PB</span>
+            </div>
+            <span class="font-display font-bold text-lg text-white tracking-tight group-hover:text-warm-400 transition-colors duration-200">Project Board</span>
+          <% end %>
+          <nav class="flex items-center gap-6">
+            <%= link_to "案件一覧", projects_path, class: "text-sm text-gray-400 hover:text-warm-400 transition-colors duration-200" %>
+            <%= link_to "新規登録", new_project_path, class: "text-sm px-4 py-1.5 bg-warm-500/10 text-warm-400 rounded-full hover:bg-warm-500/20 border border-warm-500/20 transition-all duration-200" %>
+          </nav>
+        </div>
       </div>
     </header>
 
-    <main class="container mx-auto mt-8 px-5">
+    <main class="max-w-7xl mx-auto px-6 lg:px-8 py-10 relative z-10">
+      <% if notice.present? %>
+        <div class="mb-8 px-5 py-3.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl flex items-center gap-3" id="notice">
+          <div class="w-5 h-5 bg-emerald-500/20 rounded-full flex items-center justify-center shrink-0">
+            <div class="w-2 h-2 bg-emerald-400 rounded-full"></div>
+          </div>
+          <span class="text-sm font-medium"><%= notice %></span>
+        </div>
+      <% end %>
+
       <%= yield %>
     </main>
+
+    <footer class="border-t border-white/5 mt-auto">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <p class="text-xs text-gray-600 font-display tracking-wide">Project Board &mdash; SES案件管理</p>
+      </div>
+    </footer>
   </body>
 </html>

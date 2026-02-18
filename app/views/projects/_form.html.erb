@@ -1,8 +1,11 @@
-<%= form_with(model: project, class: "contents") do |form| %>
+<%= form_with(model: project, class: "space-y-8") do |form| %>
   <% if project.errors.any? %>
-    <div class="bg-red-50 text-red-500 px-4 py-3 font-medium rounded-md mb-5">
-      <h2><%= project.errors.count %>件のエラーがあります：</h2>
-      <ul class="list-disc ml-6 mt-2">
+    <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-5 py-4 rounded-xl">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+        <h2 class="font-display font-bold text-sm"><%= project.errors.count %>件のエラー</h2>
+      </div>
+      <ul class="ml-4 text-sm space-y-1 text-red-400/80">
         <% project.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -10,48 +13,57 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :name, "案件名", class: "block font-medium text-gray-700" %>
-    <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:name].none?, "border-red-400 focus:outline-red-600": project.errors[:name].any?}], placeholder: "例：○○システム開発" %>
+  <div>
+    <%= form.label :name, "案件名", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+    <%= form.text_field :name, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:name].any? ? "border-red-500/40" : "border-white/10"], placeholder: "例：○○システム開発" %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :client_name, "クライアント名", class: "block font-medium text-gray-700" %>
-    <%= form.text_field :client_name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:client_name].none?, "border-red-400 focus:outline-red-600": project.errors[:client_name].any?}], placeholder: "例：株式会社○○" %>
+  <div>
+    <%= form.label :client_name, "クライアント名", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+    <%= form.text_field :client_name, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:client_name].any? ? "border-red-500/40" : "border-white/10"], placeholder: "例：株式会社○○" %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :unit_price, "単価（万円）", class: "block font-medium text-gray-700" %>
-    <%= form.number_field :unit_price, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:unit_price].none?, "border-red-400 focus:outline-red-600": project.errors[:unit_price].any?}], placeholder: "例：600000", step: 10000 %>
+  <div>
+    <label class="inline-flex items-center gap-3 cursor-pointer group">
+      <%= form.check_box :client_visible, class: "w-4 h-4 rounded bg-navy-900 border border-white/10 text-warm-500 focus:ring-warm-500/40 focus:ring-2 focus:ring-offset-0 cursor-pointer" %>
+      <span class="text-sm text-gray-300 group-hover:text-white transition-colors">クライアント名を一覧・詳細に表示する</span>
+    </label>
   </div>
 
-  <div class="my-5">
-    <%= form.label :work_style, "勤務形態", class: "block font-medium text-gray-700" %>
-    <%= form.select :work_style, work_style_options, { include_blank: "選択してください" }, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:work_style].none?, "border-red-400 focus:outline-red-600": project.errors[:work_style].any?}] %>
+  <div>
+    <%= form.label :unit_price, "単価（円）", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+    <%= form.number_field :unit_price, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:unit_price].any? ? "border-red-500/40" : "border-white/10"], placeholder: "例：600000", step: 10000 %>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
     <div>
-      <%= form.label :start_date, "開始日", class: "block font-medium text-gray-700" %>
-      <%= form.date_field :start_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:start_date].none?, "border-red-400 focus:outline-red-600": project.errors[:start_date].any?}] %>
+      <%= form.label :work_style, "勤務形態", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+      <%= form.select :work_style, work_style_options, { include_blank: "選択してください" }, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:work_style].any? ? "border-red-500/40" : "border-white/10"] %>
     </div>
     <div>
-      <%= form.label :end_date, "終了日", class: "block font-medium text-gray-700" %>
-      <%= form.date_field :end_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:end_date].none?, "border-red-400 focus:outline-red-600": project.errors[:end_date].any?}] %>
+      <%= form.label :status, "状態", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+      <%= form.select :status, status_options, { include_blank: "選択してください" }, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:status].any? ? "border-red-500/40" : "border-white/10"] %>
     </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :tech_stack, "技術スタック", class: "block font-medium text-gray-700" %>
-    <%= form.text_field :tech_stack, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:tech_stack].none?, "border-red-400 focus:outline-red-600": project.errors[:tech_stack].any?}], placeholder: "例：Ruby, Rails, PostgreSQL, Docker" %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div>
+      <%= form.label :start_date, "開始日", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+      <%= form.date_field :start_date, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:start_date].any? ? "border-red-500/40" : "border-white/10"] %>
+    </div>
+    <div>
+      <%= form.label :end_date, "終了日", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+      <%= form.date_field :end_date, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:end_date].any? ? "border-red-500/40" : "border-white/10"] %>
+    </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :status, "状態", class: "block font-medium text-gray-700" %>
-    <%= form.select :status, status_options, { include_blank: "選択してください" }, class: ["block shadow-sm rounded-md border px-3 py-2 mt-1 w-full", {"border-gray-300 focus:outline-blue-600": project.errors[:status].none?, "border-red-400 focus:outline-red-600": project.errors[:status].any?}] %>
+  <div>
+    <%= form.label :tech_stack, "技術スタック", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+    <%= form.text_field :tech_stack, class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:tech_stack].any? ? "border-red-500/40" : "border-white/10"], placeholder: "例：Ruby, Rails, PostgreSQL, Docker" %>
+    <p class="mt-2 text-xs text-gray-600">カンマ区切りで入力</p>
   </div>
 
-  <div class="mt-8">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+  <div class="pt-4">
+    <%= form.submit class: "w-full sm:w-auto px-8 py-3 bg-warm-500 hover:bg-warm-400 text-navy-950 font-display font-bold rounded-xl shadow-lg shadow-warm-500/25 hover:shadow-warm-400/30 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer" %>
   </div>
 <% end %>

@@ -1,57 +1,83 @@
 <% content_for :title, @project.name %>
 
-<div class="max-w-2xl">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<%# Breadcrumb %>
+<nav class="mb-8 flex items-center gap-2 text-sm">
+  <%= link_to "案件一覧", projects_path, class: "text-gray-500 hover:text-warm-400 transition-colors" %>
+  <span class="text-gray-700">/</span>
+  <span class="text-gray-300"><%= @project.name %></span>
+</nav>
 
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="font-bold text-2xl text-gray-800"><%= @project.name %></h1>
-    <span class="px-3 py-1 text-sm font-medium rounded-full <%= status_badge_class(@project) %>">
-      <%= status_label(@project) %>
-    </span>
-  </div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <%# Left: Main content (2 cols) %>
+  <div class="lg:col-span-2 space-y-6">
+    <%# Header %>
+    <div>
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-2.5 h-2.5 rounded-full <%= status_indicator_class(@project) %> shadow-lg shadow-current"></div>
+        <span class="text-xs font-display font-bold tracking-widest uppercase <%= status_text_class(@project) %>"><%= status_label(@project) %></span>
+      </div>
+      <h1 class="font-display font-extrabold text-3xl sm:text-4xl text-white leading-tight mb-2"><%= @project.name %></h1>
+      <% if @project.client_visible? %>
+        <p class="text-gray-400 text-lg"><%= @project.client_name %></p>
+      <% end %>
+    </div>
 
-  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-    <dl class="divide-y divide-gray-200">
-      <div class="px-6 py-4 grid grid-cols-3">
-        <dt class="font-medium text-gray-500">クライアント名</dt>
-        <dd class="col-span-2 text-gray-800"><%= @project.client_name %></dd>
-      </div>
-      <div class="px-6 py-4 grid grid-cols-3">
-        <dt class="font-medium text-gray-500">単価</dt>
-        <dd class="col-span-2 text-gray-800"><%= formatted_unit_price(@project.unit_price) %></dd>
-      </div>
-      <div class="px-6 py-4 grid grid-cols-3">
-        <dt class="font-medium text-gray-500">勤務形態</dt>
-        <dd class="col-span-2 text-gray-800"><%= work_style_label(@project) %></dd>
-      </div>
-      <div class="px-6 py-4 grid grid-cols-3">
-        <dt class="font-medium text-gray-500">開始日</dt>
-        <dd class="col-span-2 text-gray-800"><%= @project.start_date %></dd>
-      </div>
-      <div class="px-6 py-4 grid grid-cols-3">
-        <dt class="font-medium text-gray-500">終了日</dt>
-        <dd class="col-span-2 text-gray-800"><%= @project.end_date || "—" %></dd>
-      </div>
-      <div class="px-6 py-4 grid grid-cols-3">
-        <dt class="font-medium text-gray-500">技術スタック</dt>
-        <dd class="col-span-2 text-gray-800">
-          <% if @project.tech_stack.present? %>
-            <% @project.tech_stack.split(",").each do |tech| %>
-              <span class="inline-block bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded mr-1 mb-1"><%= tech.strip %></span>
-            <% end %>
-          <% else %>
-            —
+    <%# Tech Stack %>
+    <% if @project.tech_stack.present? %>
+      <div class="bg-navy-900 border border-white/5 rounded-2xl p-6">
+        <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-4">技術スタック</p>
+        <div class="flex flex-wrap gap-2">
+          <% @project.tech_stack.split(",").each do |tech| %>
+            <span class="px-3 py-1.5 bg-white/5 text-gray-300 text-sm font-medium rounded-lg border border-white/5 hover:border-warm-500/30 hover:text-warm-400 transition-colors duration-200"><%= tech.strip %></span>
           <% end %>
-        </dd>
+        </div>
       </div>
-    </dl>
+    <% end %>
+
+    <%# Period %>
+    <div class="bg-navy-900 border border-white/5 rounded-2xl p-6">
+      <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-4">参画期間</p>
+      <div class="flex items-center gap-4">
+        <div>
+          <p class="text-xs text-gray-500 mb-1">開始</p>
+          <p class="font-display font-bold text-lg text-white"><%= @project.start_date %></p>
+        </div>
+        <div class="flex-1 border-t border-dashed border-white/10 mx-2"></div>
+        <div class="text-right">
+          <p class="text-xs text-gray-500 mb-1">終了</p>
+          <p class="font-display font-bold text-lg text-white"><%= @project.end_date || "—" %></p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="mt-6 flex space-x-3">
-    <%= link_to "編集", edit_project_path(@project), class: "rounded-md px-4 py-2 bg-gray-100 hover:bg-gray-200 font-medium text-gray-700" %>
-    <%= link_to "一覧に戻る", projects_path, class: "rounded-md px-4 py-2 bg-gray-100 hover:bg-gray-200 font-medium text-gray-700" %>
-    <%= button_to "削除", @project, method: :delete, form_class: "inline-block", class: "rounded-md px-4 py-2 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "この案件を削除しますか？" } %>
+  <%# Right: Sidebar (1 col) %>
+  <div class="space-y-6">
+    <%# Unit Price Card %>
+    <div class="bg-gradient-to-br from-warm-500/10 to-warm-600/5 border border-warm-500/20 rounded-2xl p-6">
+      <p class="text-[11px] font-display font-bold tracking-widest text-warm-500/70 uppercase mb-2">月額単価</p>
+      <p class="font-display font-extrabold text-3xl text-warm-400"><%= formatted_unit_price(@project.unit_price) %></p>
+    </div>
+
+    <%# Work Style %>
+    <div class="bg-navy-900 border border-white/5 rounded-2xl p-6">
+      <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-3">勤務形態</p>
+      <div class="flex items-center gap-2">
+        <span class="text-gray-400"><%= work_style_icon(@project) %></span>
+        <span class="text-white font-medium"><%= work_style_label(@project) %></span>
+      </div>
+    </div>
+
+    <%# Actions %>
+    <div class="space-y-2">
+      <%= link_to edit_project_path(@project), class: "flex items-center justify-center gap-2 w-full px-4 py-3 bg-navy-900 border border-white/10 rounded-xl text-sm font-medium text-gray-300 hover:text-warm-400 hover:border-warm-500/30 transition-all duration-200" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        <span>この案件を編集</span>
+      <% end %>
+      <%= button_to @project, method: :delete, form_class: "w-full", class: "flex items-center justify-center gap-2 w-full px-4 py-3 bg-navy-900 border border-white/10 rounded-xl text-sm font-medium text-gray-300 hover:text-red-400 hover:border-red-500/30 transition-all duration-200 cursor-pointer", data: { turbo_confirm: "「#{@project.name}」を削除しますか？" } do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        <span>削除</span>
+      <% end %>
+    </div>
   </div>
 </div>

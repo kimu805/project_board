@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Bricolage Grotesque", serif;
+  --font-body: "Noto Sans JP", sans-serif;
+  --color-navy-950: #0a0e1a;
+  --color-navy-900: #111827;
+  --color-navy-800: #1a2235;
+  --color-navy-700: #243049;
+  --color-navy-600: #334264;
+  --color-warm-50: #fffbeb;
+  --color-warm-100: #fef3c7;
+  --color-warm-200: #fde68a;
+  --color-warm-400: #fbbf24;
+  --color-warm-500: #f59e0b;
+  --color-warm-600: #d97706;
+}
