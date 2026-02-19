@@ -9,8 +9,13 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.date :end_date
       t.string :tech_stack
       t.integer :status
+      t.integer :user_id, null: false
+      t.text :memo
 
       t.timestamps
     end
+
+    add_index :projects, :user_id
+    add_foreign_key :projects, :users
   end
 end
