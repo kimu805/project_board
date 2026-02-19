@@ -129,6 +129,22 @@ RSpec.describe Project, type: :model do
         expect(p.tech_stack).to eq("Ruby, Rails, PostgreSQL")
       end
     end
+
+    describe "memo（メモ）" do
+      it "任意：nil でも valid" do
+        expect(build_project(memo: nil)).to be_valid
+      end
+
+      it "任意：空文字でも valid" do
+        expect(build_project(memo: "")).to be_valid
+      end
+
+      it "マークダウンテキストを保存できる" do
+        p = build_project(memo: "# タイトル\n\n- リスト")
+        p.save!
+        expect(p.memo).to eq("# タイトル\n\n- リスト")
+      end
+    end
   end
 
   # -------------------------

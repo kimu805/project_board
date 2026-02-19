@@ -13,6 +13,7 @@ ja:
         end_date: 終了日
         tech_stack: 技術スタック
         status: 状態
+        memo: メモ
       user:
         name: 名前
         email: メールアドレス

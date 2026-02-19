@@ -234,6 +234,36 @@ RSpec.describe "Projects", type: :request do
       end
     end
 
+    describe "メモ機能" do
+      context "POST /projects（メモ付き登録）" do
+        it "メモが保存される" do
+          post projects_path, params: { project: project_attrs.merge(memo: "**test**") }
+          expect(Project.last.memo).to eq("**test**")
+        end
+      end
+
+      context "PATCH /projects/:id（メモ更新）" do
+        it "メモが更新される" do
+          patch project_path(project), params: { project: { memo: "# updated" } }
+          expect(project.reload.memo).to eq("# updated")
+        end
+      end
+
+      context "GET /projects/:id（詳細表示）" do
+        it "メモがHTMLレンダリングされて表示される" do
+          project.update!(memo: "**太字**")
+          get project_path(project)
+          expect(response.body).to include("<strong>太字</strong>")
+        end
+
+        it "メモが空の場合はプレースホルダーを表示" do
+          project.update!(memo: nil)
+          get project_path(project)
+          expect(response.body).to include("メモを追加する")
+        end
+      end
+    end
+
     describe "DELETE /projects/:id（削除）" do
       it "案件が1件減る" do
         project  # 事前に作成

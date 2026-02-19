@@ -1,5 +1,122 @@
 @import "tailwindcss";
 
+@layer components {
+  .markdown-content {
+    color: rgb(209 213 219); /* text-gray-300 */
+    line-height: 1.7;
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      color: #fff;
+      margin-top: 1.25em;
+      margin-bottom: 0.5em;
+      line-height: 1.3;
+    }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.125rem; }
+    h4, h5, h6 { font-size: 1rem; }
+
+    p {
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+    }
+    p:first-child { margin-top: 0; }
+    p:last-child  { margin-bottom: 0; }
+
+    ul {
+      list-style-type: disc;
+      list-style-position: outside;
+      padding-left: 1.5em;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    ol {
+      list-style-type: decimal;
+      list-style-position: outside;
+      padding-left: 1.5em;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    li {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+    li > ul, li > ol {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+
+    strong { color: #fff; font-weight: 700; }
+    em     { font-style: italic; }
+    del    { text-decoration: line-through; color: rgb(107 114 128); }
+
+    a {
+      color: rgb(251 191 36); /* warm-400 */
+      text-decoration: underline;
+    }
+    a:hover { color: rgb(245 158 11); }
+
+    code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.85em;
+      background: rgb(255 255 255 / 0.08);
+      border-radius: 4px;
+      padding: 0.15em 0.4em;
+      color: rgb(253 230 138); /* warm-200 */
+    }
+    pre {
+      background: rgb(255 255 255 / 0.05);
+      border: 1px solid rgb(255 255 255 / 0.08);
+      border-radius: 0.75rem;
+      padding: 1em 1.25em;
+      overflow-x: auto;
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.875rem;
+      color: rgb(209 213 219);
+    }
+
+    blockquote {
+      border-left: 3px solid rgb(245 158 11 / 0.4);
+      padding-left: 1em;
+      margin-left: 0;
+      color: rgb(156 163 175); /* text-gray-400 */
+      font-style: italic;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+    }
+    th {
+      background: rgb(255 255 255 / 0.05);
+      color: #fff;
+      font-weight: 600;
+      padding: 0.5em 0.75em;
+      border-bottom: 1px solid rgb(255 255 255 / 0.1);
+      text-align: left;
+    }
+    td {
+      padding: 0.5em 0.75em;
+      border-bottom: 1px solid rgb(255 255 255 / 0.06);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgb(255 255 255 / 0.1);
+      margin: 1.25em 0;
+    }
+  }
+}
+
 @theme {
   --font-display: "Bricolage Grotesque", serif;
   --font-body: "Noto Sans JP", sans-serif;
