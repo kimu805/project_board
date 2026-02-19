@@ -80,6 +80,68 @@ RSpec.describe "Projects", type: :request do
         expect(response.body).to include(project.name)
         expect(response.body).not_to include(other_project.name)
       end
+
+      describe "検索・フィルタリング" do
+        let!(:active_project) do
+          user.projects.create!(project_attrs.merge(
+            name: "参画中案件", status: "active",
+            work_style: "full_remote", unit_price: 700_000
+          ))
+        end
+        let!(:upcoming_project) do
+          user.projects.create!(project_attrs.merge(
+            name: "参画前案件", status: "upcoming",
+            work_style: "full_onsite", unit_price: 400_000
+          ))
+        end
+
+        context "keyword パラメーターがある場合" do
+          it "案件名に一致する案件のみ表示される" do
+            get projects_path, params: { keyword: "参画中" }
+            expect(response.body).to include("参画中案件")
+            expect(response.body).not_to include("参画前案件")
+          end
+        end
+
+        context "status パラメーターがある場合" do
+          it "指定したステータスの案件のみ表示される" do
+            get projects_path, params: { status: "active" }
+            expect(response.body).to include("参画中案件")
+            expect(response.body).not_to include("参画前案件")
+          end
+        end
+
+        context "work_style パラメーターがある場合" do
+          it "指定した勤務形態の案件のみ表示される" do
+            get projects_path, params: { work_style: "full_remote" }
+            expect(response.body).to include("参画中案件")
+            expect(response.body).not_to include("参画前案件")
+          end
+        end
+
+        context "min_price パラメーターがある場合" do
+          it "単価が min_price 以上の案件のみ表示される" do
+            get projects_path, params: { min_price: 600_000 }
+            expect(response.body).to include("参画中案件")
+            expect(response.body).not_to include("参画前案件")
+          end
+        end
+
+        context "max_price パラメーターがある場合" do
+          it "単価が max_price 以下の案件のみ表示される" do
+            get projects_path, params: { max_price: 500_000 }
+            expect(response.body).to include("参画前案件")
+            expect(response.body).not_to include("参画中案件")
+          end
+        end
+
+        context "パラメーターがない場合" do
+          it "全案件が表示される" do
+            get projects_path
+            expect(response.body).to include("参画中案件", "参画前案件")
+          end
+        end
+      end
     end
 
     describe "GET /projects/:id（詳細）" do

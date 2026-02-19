@@ -1,10 +1,10 @@
 module ProjectsHelper
   def work_style_options
-    Project.work_styles.keys.map { |key| [I18n.t("enums.project.work_style.#{key}"), key] }
+    Project.work_styles.keys.map { |key| [ I18n.t("enums.project.work_style.#{key}"), key ] }
   end
 
   def status_options
-    Project.statuses.keys.map { |key| [I18n.t("enums.project.status.#{key}"), key] }
+    Project.statuses.keys.map { |key| [ I18n.t("enums.project.status.#{key}"), key ] }
   end
 
   def work_style_label(project)

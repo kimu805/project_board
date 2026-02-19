@@ -189,4 +189,91 @@ RSpec.describe Project, type: :model do
       expect(p.user).to eq(user)
     end
   end
+
+  # -------------------------
+  # 検索スコープ
+  # -------------------------
+  describe ".search_by_keyword" do
+    let!(:project_a) { user.projects.create!(valid_attrs.merge(name: "基幹システム開発", client_name: "株式会社ABC")) }
+    let!(:project_b) { user.projects.create!(valid_attrs.merge(name: "ECサイト構築", client_name: "株式会社XYZ")) }
+
+    it "案件名に一致するプロジェクトを返す" do
+      result = Project.search_by_keyword("基幹")
+      expect(result).to include(project_a)
+      expect(result).not_to include(project_b)
+    end
+
+    it "クライアント名に一致するプロジェクトを返す" do
+      result = Project.search_by_keyword("XYZ")
+      expect(result).to include(project_b)
+      expect(result).not_to include(project_a)
+    end
+
+    it "キーワードが空またはnilの場合は全件返す" do
+      expect(Project.search_by_keyword(nil)).to include(project_a, project_b)
+      expect(Project.search_by_keyword("")).to include(project_a, project_b)
+    end
+  end
+
+  describe ".filter_by_status" do
+    let!(:active_project)    { user.projects.create!(valid_attrs.merge(name: "参画中案件", status: :active)) }
+    let!(:upcoming_project)  { user.projects.create!(valid_attrs.merge(name: "参画前案件", status: :upcoming)) }
+    let!(:completed_project) { user.projects.create!(valid_attrs.merge(name: "終了案件",   status: :completed)) }
+
+    it "指定したステータスのみ返す" do
+      result = Project.filter_by_status("active")
+      expect(result).to include(active_project)
+      expect(result).not_to include(upcoming_project, completed_project)
+    end
+
+    it "ステータスが空またはnilの場合は全件返す" do
+      expect(Project.filter_by_status(nil)).to include(active_project, upcoming_project, completed_project)
+      expect(Project.filter_by_status("")).to include(active_project, upcoming_project, completed_project)
+    end
+  end
+
+  describe ".filter_by_work_style" do
+    let!(:remote_project)  { user.projects.create!(valid_attrs.merge(name: "フルリモート案件", work_style: :full_remote)) }
+    let!(:onsite_project)  { user.projects.create!(valid_attrs.merge(name: "フル出社案件",     work_style: :full_onsite)) }
+
+    it "指定した勤務形態のみ返す" do
+      result = Project.filter_by_work_style("full_remote")
+      expect(result).to include(remote_project)
+      expect(result).not_to include(onsite_project)
+    end
+
+    it "勤務形態が空またはnilの場合は全件返す" do
+      expect(Project.filter_by_work_style(nil)).to include(remote_project, onsite_project)
+      expect(Project.filter_by_work_style("")).to include(remote_project, onsite_project)
+    end
+  end
+
+  describe ".filter_by_unit_price" do
+    let!(:low_price)  { user.projects.create!(valid_attrs.merge(name: "低単価案件",  unit_price: 400_000)) }
+    let!(:mid_price)  { user.projects.create!(valid_attrs.merge(name: "中単価案件",  unit_price: 600_000)) }
+    let!(:high_price) { user.projects.create!(valid_attrs.merge(name: "高単価案件",  unit_price: 800_000)) }
+
+    it "min_price 以上の案件を返す" do
+      result = Project.filter_by_unit_price(min_price: 600_000, max_price: nil)
+      expect(result).to include(mid_price, high_price)
+      expect(result).not_to include(low_price)
+    end
+
+    it "max_price 以下の案件を返す" do
+      result = Project.filter_by_unit_price(min_price: nil, max_price: 600_000)
+      expect(result).to include(low_price, mid_price)
+      expect(result).not_to include(high_price)
+    end
+
+    it "min_price と max_price の範囲内の案件を返す" do
+      result = Project.filter_by_unit_price(min_price: 500_000, max_price: 700_000)
+      expect(result).to include(mid_price)
+      expect(result).not_to include(low_price, high_price)
+    end
+
+    it "min_price も max_price も nil の場合は全件返す" do
+      result = Project.filter_by_unit_price(min_price: nil, max_price: nil)
+      expect(result).to include(low_price, mid_price, high_price)
+    end
+  end
 end

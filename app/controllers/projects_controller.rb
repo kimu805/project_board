@@ -4,7 +4,8 @@ class ProjectsController < ApplicationController
 
   # GET /projects or /projects.json
   def index
-    @projects = current_user.projects
+    @filtering = filter_params.values.any?(&:present?)
+    @projects = filter_projects(current_user.projects)
   end
 
   # GET /projects/1 or /projects/1.json
@@ -67,5 +68,16 @@ class ProjectsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def project_params
       params.expect(project: [ :name, :client_name, :unit_price, :work_style, :start_date, :end_date, :tech_stack, :status ])
+    end
+
+    def filter_params
+      params.permit(:keyword, :status, :work_style, :min_price, :max_price)
+    end
+
+    def filter_projects(scope)
+      scope.search_by_keyword(filter_params[:keyword])
+           .filter_by_status(filter_params[:status])
+           .filter_by_work_style(filter_params[:work_style])
+           .filter_by_unit_price(min_price: filter_params[:min_price], max_price: filter_params[:max_price])
     end
 end
