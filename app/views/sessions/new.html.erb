@@ -1,0 +1,43 @@
+<% content_for :title, "ログイン" %>
+
+<div class="min-h-[calc(100vh-10rem)] flex items-center justify-center py-12">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <p class="text-xs font-display tracking-widest text-warm-500 uppercase mb-2">Sign In</p>
+      <h1 class="font-display font-extrabold text-3xl text-white">ログイン</h1>
+      <p class="mt-2 text-sm text-gray-500">案件管理を続ける</p>
+    </div>
+
+    <div class="bg-navy-900 border border-white/5 rounded-2xl p-6 sm:p-8">
+      <%= form_with(url: login_path, class: "space-y-6") do |form| %>
+        <div>
+          <%= form.label :email, "メールアドレス", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+          <%= form.email_field :email,
+              name: "session[email]",
+              class: "block w-full bg-navy-950 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all",
+              placeholder: "you@example.com",
+              autocomplete: "email" %>
+        </div>
+
+        <div>
+          <%= form.label :password, "パスワード", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+          <%= form.password_field :password,
+              name: "session[password]",
+              class: "block w-full bg-navy-950 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all",
+              placeholder: "パスワードを入力",
+              autocomplete: "current-password" %>
+        </div>
+
+        <div class="pt-2">
+          <%= form.submit "ログイン",
+              class: "w-full px-8 py-3 bg-warm-500 hover:bg-warm-400 text-navy-950 font-display font-bold rounded-xl shadow-lg shadow-warm-500/25 hover:shadow-warm-400/30 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+
+    <p class="text-center mt-6 text-sm text-gray-500">
+      アカウントをお持ちでない方は
+      <%= link_to "新規登録", signup_path, class: "text-warm-400 hover:text-warm-300 font-medium transition-colors" %>
+    </p>
+  </div>
+</div>

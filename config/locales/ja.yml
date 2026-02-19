@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       project: 案件
+      user: ユーザー
     attributes:
       project:
         name: 案件名
@@ -12,11 +13,19 @@ ja:
         end_date: 終了日
         tech_stack: 技術スタック
         status: 状態
+      user:
+        name: 名前
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード確認
     errors:
       messages:
         blank: を入力してください
         not_a_number: は数値で入力してください
         greater_than_or_equal_to: は%{count}以上の値にしてください
+        too_short: は%{count}文字以上で入力してください
+        invalid: の形式が正しくありません
+        taken: はすでに使用されています
   enums:
     project:
       work_style:

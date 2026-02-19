@@ -1,0 +1,75 @@
+<% content_for :title, "アカウント登録" %>
+
+<div class="min-h-[calc(100vh-10rem)] flex items-center justify-center py-12">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <p class="text-xs font-display tracking-widest text-warm-500 uppercase mb-2">Sign Up</p>
+      <h1 class="font-display font-extrabold text-3xl text-white">アカウント登録</h1>
+      <p class="mt-2 text-sm text-gray-500">SES案件管理をはじめましょう</p>
+    </div>
+
+    <div class="bg-navy-900 border border-white/5 rounded-2xl p-6 sm:p-8">
+      <% if @user.errors.any? %>
+        <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-5 py-4 rounded-xl mb-6">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+            <h2 class="font-display font-bold text-sm"><%= @user.errors.count %>件のエラー</h2>
+          </div>
+          <ul class="ml-4 text-sm space-y-1 text-red-400/80">
+            <% @user.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with(model: @user, url: signup_path, class: "space-y-6") do |form| %>
+        <div>
+          <%= form.label :name, "名前", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+          <%= form.text_field :name,
+              class: ["block w-full bg-navy-950 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all",
+                      @user.errors[:name].any? ? "border-red-500/40" : "border-white/10"],
+              placeholder: "山田 太郎",
+              autocomplete: "name" %>
+        </div>
+
+        <div>
+          <%= form.label :email, "メールアドレス", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+          <%= form.email_field :email,
+              class: ["block w-full bg-navy-950 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all",
+                      @user.errors[:email].any? ? "border-red-500/40" : "border-white/10"],
+              placeholder: "you@example.com",
+              autocomplete: "email" %>
+        </div>
+
+        <div>
+          <%= form.label :password, "パスワード", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+          <%= form.password_field :password,
+              class: ["block w-full bg-navy-950 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all",
+                      @user.errors[:password].any? ? "border-red-500/40" : "border-white/10"],
+              placeholder: "6文字以上",
+              autocomplete: "new-password" %>
+        </div>
+
+        <div>
+          <%= form.label :password_confirmation, "パスワード確認", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+          <%= form.password_field :password_confirmation,
+              class: ["block w-full bg-navy-950 border rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all",
+                      @user.errors[:password_confirmation].any? ? "border-red-500/40" : "border-white/10"],
+              placeholder: "パスワードを再入力",
+              autocomplete: "new-password" %>
+        </div>
+
+        <div class="pt-2">
+          <%= form.submit "アカウントを作成する",
+              class: "w-full px-8 py-3 bg-warm-500 hover:bg-warm-400 text-navy-950 font-display font-bold rounded-xl shadow-lg shadow-warm-500/25 hover:shadow-warm-400/30 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+
+    <p class="text-center mt-6 text-sm text-gray-500">
+      すでにアカウントをお持ちの方は
+      <%= link_to "ログイン", login_path, class: "text-warm-400 hover:text-warm-300 font-medium transition-colors" %>
+    </p>
+  </div>
+</div>

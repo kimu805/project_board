@@ -4,19 +4,32 @@
 
 ### 概要
 
-SES案件管理アプリケーション。案件の登録・閲覧・編集・削除を行い、参画状況を一覧で管理する。
+SES案件管理アプリケーション。ユーザー登録・ログインによりユーザーごとに案件を管理し、参画状況を一覧で管理する。
 
 ### 機能一覧
 
 | # | 機能 | 画面 | 説明 |
 |---|------|------|------|
-| 1 | 案件一覧表示 | `GET /` `/projects` | 全案件をカード形式で一覧表示。ステータス別の件数サマリーを表示 |
-| 2 | 案件詳細表示 | `GET /projects/:id` | 案件の全情報を詳細画面で表示 |
-| 3 | 案件登録 | `GET /projects/new` `POST /projects` | フォームから新規案件を登録 |
-| 4 | 案件編集 | `GET /projects/:id/edit` `PATCH /projects/:id` | 既存案件の情報を編集 |
-| 5 | 案件削除 | `DELETE /projects/:id` | 確認ダイアログ後に案件を削除 |
+| 1 | ユーザー登録 | `GET /signup` `POST /users` | 名前・メールアドレス・パスワードで新規ユーザーを登録 |
+| 2 | ログイン | `GET /login` `POST /sessions` | メールアドレス・パスワードで認証しセッションを開始 |
+| 3 | ログアウト | `DELETE /sessions` | セッションを終了しログイン画面へリダイレクト |
+| 4 | 案件一覧表示 | `GET /` `/projects` | ログインユーザーの案件をカード形式で一覧表示。ステータス別の件数サマリーを表示 |
+| 5 | 案件詳細表示 | `GET /projects/:id` | 案件の全情報を詳細画面で表示 |
+| 6 | 案件登録 | `GET /projects/new` `POST /projects` | フォームから新規案件を登録 |
+| 7 | 案件編集 | `GET /projects/:id/edit` `PATCH /projects/:id` | 既存案件の情報を編集 |
+| 8 | 案件削除 | `DELETE /projects/:id` | 確認ダイアログ後に案件を削除 |
 
 ### 画面仕様
+
+#### ユーザー登録画面（signup）
+- 入力項目：名前、メールアドレス、パスワード、パスワード確認
+- 登録後はログイン状態になり案件一覧へリダイレクト
+- すでにアカウントをお持ちの方向けにログインリンクを表示
+
+#### ログイン画面（login）
+- 入力項目：メールアドレス、パスワード
+- 認証失敗時はエラーメッセージを表示
+- 新規登録リンクを表示
 
 #### 案件一覧画面（index）
 - ステータス別サマリー（参画中 / 参画前 / 終了 の件数）
@@ -36,6 +49,16 @@ SES案件管理アプリケーション。案件の登録・閲覧・編集・�
 
 ### バリデーション
 
+#### ユーザー
+
+| フィールド | ルール |
+|-----------|--------|
+| 名前 | 必須 |
+| メールアドレス | 必須、形式チェック、一意 |
+| パスワード | 必須、6文字以上 |
+
+#### 案件
+
 | フィールド | ルール |
 |-----------|--------|
 | 案件名 | 必須 |
@@ -54,32 +77,46 @@ SES案件管理アプリケーション。案件の登録・閲覧・編集・�
 ### ER図
 
 ```
-+-------------------+
-|     projects      |
-+-------------------+
-| id          : PK  |
-| name        : STR |
-| client_name : STR |
-| unit_price  : INT |
-| work_style  : INT |  ← enum (0〜5: フル出社〜フルリモート)
-| start_date  : DATE|
-| end_date    : DATE|
-| tech_stack  : STR |
-| status      : INT |  ← enum (0: upcoming, 1: active, 2: completed)
-| created_at  : TS  |
-| updated_at  : TS  |
-+-------------------+
++-------------------+       +-------------------+
+|      users        |       |     projects      |
++-------------------+       +-------------------+
+| id          : PK  |1     N| id          : PK  |
+| name        : STR |-------| user_id     : FK  |
+| email       : STR |       | name        : STR |
+| password_   : STR |       | client_name : STR |
+|   digest        |       | unit_price  : INT |
+| created_at  : TS  |       | work_style  : INT |  ← enum
+| updated_at  : TS  |       | start_date  : DATE|
++-------------------+       | end_date    : DATE|
+                            | tech_stack  : STR |
+                            | status      : INT |  ← enum
+                            | created_at  : TS  |
+                            | updated_at  : TS  |
+                            +-------------------+
 ```
 
-※ 現在は単一テーブル構成。リレーションなし。
+- users と projects は 1対多 の関係
+- パスワードは bcrypt でハッシュ化して `password_digest` に保存（`has_secure_password` 利用）
 
 ### テーブル定義
+
+#### users
+
+| カラム名 | 型 | NULL | デフォルト | 説明 |
+|---------|-----|------|-----------|------|
+| id | integer | NO | auto | 主キー |
+| name | string | NO | - | 名前 |
+| email | string | NO | - | メールアドレス（一意） |
+| password_digest | string | NO | - | パスワードハッシュ（bcrypt） |
+| created_at | datetime | NO | auto | 作成日時 |
+| updated_at | datetime | NO | auto | 更新日時 |
 
 #### projects
 
 | カラム名 | 型 | NULL | デフォルト | 説明 |
 |---------|-----|------|-----------|------|
 | id | integer | NO | auto | 主キー |
+| user_id | integer | NO | - | 外部キー（users.id） |
 | name | string | YES | - | 案件名 |
 | client_name | string | YES | - | クライアント名 |
 | unit_price | integer | YES | - | 月額単価（円） |

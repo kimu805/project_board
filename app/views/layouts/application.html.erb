@@ -36,8 +36,15 @@
             <span class="font-display font-bold text-lg text-white tracking-tight group-hover:text-warm-400 transition-colors duration-200">Project Board</span>
           <% end %>
           <nav class="flex items-center gap-6">
-            <%= link_to "案件一覧", projects_path, class: "text-sm text-gray-400 hover:text-warm-400 transition-colors duration-200" %>
-            <%= link_to "新規登録", new_project_path, class: "text-sm px-4 py-1.5 bg-warm-500/10 text-warm-400 rounded-full hover:bg-warm-500/20 border border-warm-500/20 transition-all duration-200" %>
+            <% if logged_in? %>
+              <%= link_to "案件一覧", projects_path, class: "text-sm text-gray-400 hover:text-warm-400 transition-colors duration-200" %>
+              <span class="text-sm text-gray-600"><%= current_user.name %></span>
+              <%= button_to "ログアウト", logout_path, method: :delete,
+                  class: "text-sm px-4 py-1.5 bg-white/5 text-gray-400 rounded-full hover:bg-white/10 border border-white/10 transition-all duration-200 cursor-pointer" %>
+            <% else %>
+              <%= link_to "ログイン", login_path, class: "text-sm text-gray-400 hover:text-warm-400 transition-colors duration-200" %>
+              <%= link_to "新規登録", signup_path, class: "text-sm px-4 py-1.5 bg-warm-500/10 text-warm-400 rounded-full hover:bg-warm-500/20 border border-warm-500/20 transition-all duration-200" %>
+            <% end %>
           </nav>
         </div>
       </div>
@@ -50,6 +57,14 @@
             <div class="w-2 h-2 bg-emerald-400 rounded-full"></div>
           </div>
           <span class="text-sm font-medium"><%= notice %></span>
+        </div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="mb-8 px-5 py-3.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl flex items-center gap-3" id="alert">
+          <div class="w-5 h-5 bg-red-500/20 rounded-full flex items-center justify-center shrink-0">
+            <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+          </div>
+          <span class="text-sm font-medium"><%= alert %></span>
         </div>
       <% end %>
 

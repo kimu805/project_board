@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  belongs_to :user
+
   enum :work_style, { full_onsite: 0, remote_1day: 1, remote_2days: 2, remote_3days: 3, remote_4days: 4, full_remote: 5 }, validate: true
   enum :status, { upcoming: 0, active: 1, completed: 2 }, validate: true
 

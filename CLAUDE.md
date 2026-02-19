@@ -3,6 +3,7 @@
 ## プロジェクト概要
 
 SES案件管理アプリ（Rails 8.0.4 / SQLite3 / Tailwind CSS 4）
+詳細はdocs/design.mdにて記載あり。
 
 ## よく使うコマンド
 
