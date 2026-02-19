@@ -1,24 +1,10 @@
-# README
+# 概要
+## アプリ名
+project_board
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 工夫した点
+1. 会社名を非表示にした点（機密情報保護の観点から）
+2. プロジェクトのメモにマークダウン形式を採用（視認性の向上）
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## 開発手法
+AI-STDD（仕様・テスト駆動開発）
