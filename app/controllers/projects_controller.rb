@@ -2,6 +2,11 @@ class ProjectsController < ApplicationController
   before_action :require_login
   before_action :set_project, only: %i[ show edit update destroy ]
 
+  # GET /projects/timeline
+  def timeline
+    @timeline = ProjectTimeline.new(current_user.projects)
+  end
+
   # GET /projects or /projects.json
   def index
     @filtering = filter_params.values.any?(&:present?)

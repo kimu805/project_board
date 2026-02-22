@@ -43,6 +43,14 @@ module ProjectsHelper
     number_to_currency(price, unit: "¥", precision: 0, delimiter: ",")
   end
 
+  def timeline_bar_color(project)
+    case project.status
+    when "active"    then "#34d399"
+    when "upcoming"  then "#fbbf24"
+    when "completed" then "#6b7280"
+    end
+  end
+
   def render_markdown(text)
     return "" if text.blank?
 

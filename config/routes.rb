@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :projects
+  resources :projects do
+    get :timeline, on: :collection
+  end
 
   get  "signup", to: "users#new",        as: :signup
   post "signup", to: "users#create"

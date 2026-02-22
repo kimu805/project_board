@@ -38,6 +38,7 @@
           <nav class="flex items-center gap-6">
             <% if logged_in? %>
               <%= link_to "案件一覧", projects_path, class: "text-sm text-gray-400 hover:text-warm-400 transition-colors duration-200" %>
+              <%= link_to "タイムライン", timeline_projects_path, class: "text-sm text-gray-400 hover:text-warm-400 transition-colors duration-200" %>
               <span class="text-sm text-gray-600"><%= current_user.name %></span>
               <%= button_to "ログアウト", logout_path, method: :delete,
                   class: "text-sm px-4 py-1.5 bg-white/5 text-gray-400 rounded-full hover:bg-white/10 border border-white/10 transition-all duration-200 cursor-pointer" %>

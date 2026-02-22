@@ -58,6 +58,11 @@ RSpec.describe "Projects", type: :request do
       delete project_path(project)
       expect(response).to redirect_to(login_path)
     end
+
+    it "GET /projects/timeline はログインページへリダイレクト" do
+      get timeline_projects_path
+      expect(response).to redirect_to(login_path)
+    end
   end
 
   # -------------------------
@@ -261,6 +266,30 @@ RSpec.describe "Projects", type: :request do
           get project_path(project)
           expect(response.body).to include("メモを追加する")
         end
+      end
+    end
+
+    describe "GET /projects/timeline（タイムライン）" do
+      it "200 を返す" do
+        get timeline_projects_path
+        expect(response).to have_http_status(200)
+      end
+
+      it "自分の案件名が表示される" do
+        project
+        get timeline_projects_path
+        expect(response.body).to include(project.name)
+      end
+
+      it "他ユーザーの案件名は表示されない" do
+        other_project
+        get timeline_projects_path
+        expect(response.body).not_to include(other_project.name)
+      end
+
+      it "案件が0件のときは空状態メッセージを表示する" do
+        get timeline_projects_path
+        expect(response.body).to include("案件がありません")
       end
     end
 

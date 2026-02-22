@@ -20,6 +20,7 @@ SES案件管理アプリケーション。ユーザー登録・ログインに�
 | 8 | 案件削除 | `DELETE /projects/:id` | 確認ダイアログ後に案件を削除 |
 | 9 | 検索・絞り込み | `GET /projects?keyword=...&status=...` | キーワード・ステータス・勤務形態・単価範囲でリアルタイム絞り込み |
 | 10 | メモ | 案件詳細・編集画面 | 案件ごとにマークダウン形式のメモを記述・表示する |
+| 11 | 参画期間タイムライン | `GET /projects/timeline` | 全案件の参画期間を横軸（時系列）のバーで可視化する |
 
 ### 画面仕様
 
@@ -56,6 +57,28 @@ SES案件管理アプリケーション。ユーザー登録・ログインに�
   - **編集モード**：「編集」ボタンまたはメモエリアのクリックでテキストエリアに切り替わる
   - 編集モードには「保存」「キャンセル」ボタンを表示。保存は `PATCH /projects/:id` へフォーム送信
   - 表示・編集モードの切り替えはJavaScriptで行い、ページ遷移なしで操作できる
+
+#### タイムライン画面（timeline）
+
+- パンくずナビゲーション（案件一覧 > タイムライン）
+- 横軸に年月ラベルを表示し、各案件を横バーで描画する
+- 案件バーはステータスに応じた色で塗り分け（緑: 参画中、黄: 参画前、灰: 終了）
+- 終了日が未設定の案件は今日を終端として描画し、バーの右端に「継続中」ラベルを表示
+- バーにホバーすると案件名・期間・月額単価のツールチップを表示
+- バーをクリックすると案件詳細画面へ遷移
+- 案件が0件の場合は空状態メッセージと案件登録リンクを表示
+- ナビゲーションバーに「タイムライン」リンクを追加
+
+```
+参画期間タイムライン
+
+  2023年           2024年           2025年
+  04  05  06  07  08  09  10  11  12  01  02  ...
+  |   |   |   |   |   |   |   |   |   |   |
+  [████████████████████████]              案件A（参画前）
+       [████████████████████████████████] 案件B（参画中） 継続中
+                        [████]           案件C（終了）
+```
 
 #### 案件登録・編集画面（new / edit）
 - パンくずナビゲーション
@@ -256,3 +279,114 @@ gem "redcarpet"
 
 - `render_markdown(@project.memo)` の結果を `html_safe` で出力
 - メモが空（nil または空文字）の場合は「メモを追加する...」のプレースホルダーテキストを薄く表示
+
+---
+
+## 参画期間タイムライン機能仕様
+
+### 概要
+
+全案件の `start_date` / `end_date` を横軸（時系列）に並べたガントチャート風のビューで、キャリアの流れ・空白期間・案件の重なりを視覚的に把握できる。
+
+### ルーティング
+
+```ruby
+# config/routes.rb
+resources :projects do
+  get :timeline, on: :collection
+end
+```
+
+### コントローラー処理
+
+`ProjectsController#timeline` アクションに以下を実装する。
+
+| 変数 | 内容 |
+|------|------|
+| `@projects` | ログインユーザーの全案件を `start_date` 昇順で取得 |
+| `@timeline_start` | 全案件の最も古い `start_date`（月初に切り捨て） |
+| `@timeline_end` | 全案件の最も新しい `end_date` または今日の大きい方（月末に切り上げ） |
+| `@total_days` | `@timeline_end - @timeline_start`（日数） |
+
+案件が0件の場合は `@projects` が空になるため、ビュー側で空状態メッセージを表示する。
+
+### バー位置・幅の計算
+
+ヘルパーメソッド `ProjectsHelper` に以下を定義し、ビューから呼び出す。
+
+```ruby
+# app/helpers/projects_helper.rb
+
+# バーの左端位置（%）
+def timeline_bar_left(project, timeline_start, total_days)
+  ((project.start_date - timeline_start).to_f / total_days * 100).round(4)
+end
+
+# バーの幅（%）
+def timeline_bar_width(project, timeline_start, total_days)
+  effective_end = project.end_date || Date.today
+  ((effective_end - project.start_date).to_f / total_days * 100).round(4)
+end
+```
+
+### 年月ラベルの生成
+
+横軸の年月ラベルもパーセント位置で配置する。
+
+- `@timeline_start` から `@timeline_end` までの各月初日を列挙
+- 各月の左端位置を `timeline_bar_left` と同じ計算式で算出
+- 月ラベルは `YYYY年M月` 形式（ただし `1月` と先頭月のみ年を表示、それ以外は `M月` のみ）
+- **今月のラベルは赤文字（`text-red-400` / `font-bold`）で強調表示する**
+
+### ビュー構成
+
+```
+app/views/projects/timeline.html.erb
+```
+
+```html
+<!-- タイムライン全体のコンテナ（overflow-x: auto でスクロール可） -->
+<div class="timeline-container" style="position: relative; min-width: 800px;">
+
+  <!-- 年月ラベル行 -->
+  <div style="position: relative; height: 24px;">
+    <!-- 各月ラベルを position: absolute で配置 -->
+  </div>
+
+  <!-- 案件バー行（1案件ごとに1行） -->
+  <% @projects.each do |project| %>
+    <div style="position: relative; height: 40px;">
+      <!-- バー本体 -->
+      <a href="<%= project_path(project) %>"
+         style="position: absolute;
+                left: <%= timeline_bar_left(project, @timeline_start, @total_days) %>%;
+                width: <%= timeline_bar_width(project, @timeline_start, @total_days) %>%;">
+        <%= project.name %>
+      </a>
+    </div>
+  <% end %>
+
+</div>
+```
+
+### スタイリング
+
+Tailwind ユーティリティクラスを使用し、既存ステータス配色に揃える。
+
+| ステータス | バーの色 |
+|-----------|---------|
+| active（参画中） | `bg-green-500` |
+| upcoming（参画前） | `bg-yellow-400` |
+| completed（終了） | `bg-gray-400` |
+
+- コンテナには `overflow-x-auto` を付与し、案件数・期間が多い場合は横スクロールで対応
+- バーには `rounded-full` でピル型にし、ホバー時に `opacity-80` で視覚フィードバック
+- バー内のテキストは `truncate` でオーバーフロー処理
+
+### ナビゲーション追加
+
+`app/views/layouts/application.html.erb` のナビゲーションバーに「タイムライン」リンクを追加する。
+
+```erb
+<%= link_to "タイムライン", timeline_projects_path, class: "..." %>
+```
