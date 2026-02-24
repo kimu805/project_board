@@ -110,7 +110,10 @@
                 <%= work_style_icon(project) %>
                 <span><%= work_style_label(project) %></span>
               </span>
-              <span class="text-gray-600"><%= project.start_date %> — <%= project.end_date || "現在" %></span>
+              <span class="text-gray-600">
+                <%= project.start_date %> — <%= project.end_date || "現在" %>
+                <span class="text-gray-400 text-xs"><%= duration_label(project) %></span>
+              </span>
             </div>
 
             <% if project.tech_stack.present? %>

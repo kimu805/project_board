@@ -51,6 +51,22 @@ module ProjectsHelper
     end
   end
 
+  def duration_label(project)
+    effective_end = project.end_date || Date.today
+    total_months = (effective_end - project.start_date).to_f / 30.4375
+    rounded = total_months.round(1)
+
+    label = if rounded < 12
+      "#{rounded}ヶ月"
+    else
+      years = (rounded / 12).floor
+      rem   = (rounded - years * 12).round
+      rem.zero? ? "#{years}年" : "#{years}年#{rem}ヶ月"
+    end
+
+    "（#{label}）"
+  end
+
   def render_markdown(text)
     return "" if text.blank?
 
