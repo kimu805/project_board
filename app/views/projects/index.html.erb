@@ -80,7 +80,7 @@
 <% if @projects.any? %>
   <%# Stats Bar %>
   <div class="grid grid-cols-3 gap-px bg-white/5 rounded-2xl overflow-hidden mb-8">
-    <% [["参画中", @projects.select(&:active?).size, "emerald"], ["参画前", @projects.select(&:upcoming?).size, "amber"], ["終了", @projects.select(&:completed?).size, "gray"]].each do |label, count, color| %>
+    <% [["参画中", @status_counts[:active], "emerald"], ["参画前", @status_counts[:upcoming], "amber"], ["終了", @status_counts[:completed], "gray"]].each do |label, count, color| %>
       <div class="bg-navy-900 p-5">
         <p class="text-xs text-gray-500 mb-1"><%= label %></p>
         <p class="font-display font-bold text-2xl text-<%= color %>-400"><%= count %></p>
@@ -108,7 +108,7 @@
               <span class="text-white font-display font-bold"><%= formatted_unit_price(project.unit_price) %></span>
               <% if project.monthly_salary %>
                 <span class="text-warm-400 text-xs">
-                  月給 <%= number_to_currency(project.monthly_salary, unit: "¥", precision: 0, delimiter: ",") %>（<%= I18n.t("enums.project.role.#{project.role}") %>）
+                  月給 <%= formatted_monthly_salary(project.monthly_salary) %>（<%= role_label(project) %>）
                 </span>
               <% end %>
               <span class="inline-flex items-center gap-1 text-gray-500">
@@ -123,9 +123,7 @@
 
             <% if project.tech_stack.present? %>
               <div class="mt-3 flex flex-wrap gap-1.5">
-                <% project.tech_stack.split(",").each do |tech| %>
-                  <span class="text-[11px] px-2 py-0.5 rounded-md bg-white/5 text-gray-400 border border-white/5"><%= tech.strip %></span>
-                <% end %>
+                <%= render "tech_stack_tags", project: project %>
               </div>
             <% end %>
           </div>

@@ -7,6 +7,18 @@ module ProjectsHelper
     Project.statuses.keys.map { |key| [ I18n.t("enums.project.status.#{key}"), key ] }
   end
 
+  def role_options
+    Project.roles.keys.map { |k| [ I18n.t("enums.project.role.#{k}"), k ] }
+  end
+
+  def role_label(project)
+    I18n.t("enums.project.role.#{project.role}")
+  end
+
+  def formatted_monthly_salary(salary)
+    number_to_currency(salary, unit: "¥", precision: 0, delimiter: ",")
+  end
+
   def work_style_label(project)
     I18n.t("enums.project.work_style.#{project.work_style}")
   end

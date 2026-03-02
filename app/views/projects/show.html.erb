@@ -25,9 +25,7 @@
       <div class="bg-navy-900 border border-white/5 rounded-2xl p-6">
         <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-4">技術スタック</p>
         <div class="flex flex-wrap gap-2">
-          <% @project.tech_stack.split(",").each do |tech| %>
-            <span class="px-3 py-1.5 bg-white/5 text-gray-300 text-sm font-medium rounded-lg border border-white/5 hover:border-warm-500/30 hover:text-warm-400 transition-colors duration-200"><%= tech.strip %></span>
-          <% end %>
+          <%= render "tech_stack_tags", project: @project %>
         </div>
       </div>
     <% end %>
@@ -62,11 +60,11 @@
     <div class="bg-navy-900 border border-white/5 rounded-2xl p-6 space-y-4">
       <div>
         <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-1">参画ロール</p>
-        <p class="text-white font-medium"><%= I18n.t("enums.project.role.#{@project.role}") %></p>
+        <p class="text-white font-medium"><%= role_label(@project) %></p>
       </div>
       <div>
         <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-1">月給</p>
-        <p class="font-display font-bold text-xl text-warm-400"><%= number_to_currency(@project.monthly_salary, unit: "¥", precision: 0, delimiter: ",") %></p>
+        <p class="font-display font-bold text-xl text-warm-400"><%= formatted_monthly_salary(@project.monthly_salary) %></p>
       </div>
     </div>
 

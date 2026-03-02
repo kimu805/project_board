@@ -41,4 +41,16 @@ class Project < ApplicationRecord
     result = result.where("unit_price <= ?", max_price) if max_price.present?
     result
   }
+
+  def self.filter_by(filters)
+    all
+      .search_by_keyword(filters[:keyword])
+      .filter_by_status(filters[:status])
+      .filter_by_work_style(filters[:work_style])
+      .filter_by_unit_price(min_price: filters[:min_price], max_price: filters[:max_price])
+  end
+
+  def tech_stack_list
+    tech_stack.to_s.split(",").map(&:strip).reject(&:blank?)
+  end
 end

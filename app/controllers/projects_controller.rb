@@ -10,7 +10,12 @@ class ProjectsController < ApplicationController
   # GET /projects or /projects.json
   def index
     @filtering = filter_params.values.any?(&:present?)
-    @projects = filter_projects(current_user.projects)
+    @projects = current_user.projects.filter_by(filter_params)
+    @status_counts = {
+      active:    @projects.count(&:active?),
+      upcoming:  @projects.count(&:upcoming?),
+      completed: @projects.count(&:completed?)
+    }
   end
 
   # GET /projects/1 or /projects/1.json
@@ -77,12 +82,5 @@ class ProjectsController < ApplicationController
 
     def filter_params
       params.permit(:keyword, :status, :work_style, :min_price, :max_price)
-    end
-
-    def filter_projects(scope)
-      scope.search_by_keyword(filter_params[:keyword])
-           .filter_by_status(filter_params[:status])
-           .filter_by_work_style(filter_params[:work_style])
-           .filter_by_unit_price(min_price: filter_params[:min_price], max_price: filter_params[:max_price])
     end
 end
