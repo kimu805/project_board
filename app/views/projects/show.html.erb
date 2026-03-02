@@ -58,6 +58,18 @@
       <p class="font-display font-extrabold text-3xl text-warm-400"><%= formatted_unit_price(@project.unit_price) %></p>
     </div>
 
+    <%# Role & Monthly Salary %>
+    <div class="bg-navy-900 border border-white/5 rounded-2xl p-6 space-y-4">
+      <div>
+        <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-1">参画ロール</p>
+        <p class="text-white font-medium"><%= I18n.t("enums.project.role.#{@project.role}") %></p>
+      </div>
+      <div>
+        <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-1">月給</p>
+        <p class="font-display font-bold text-xl text-warm-400"><%= number_to_currency(@project.monthly_salary, unit: "¥", precision: 0, delimiter: ",") %></p>
+      </div>
+    </div>
+
     <%# Work Style %>
     <div class="bg-navy-900 border border-white/5 rounded-2xl p-6">
       <p class="text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-3">勤務形態</p>
@@ -116,6 +128,7 @@
       <%= form.hidden_field :end_date %>
       <%= form.hidden_field :tech_stack %>
       <%= form.hidden_field :status %>
+      <%= form.hidden_field :role %>
       <%= form.text_area :memo, rows: 10,
           class: "block w-full bg-navy-950 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all font-mono text-sm",
           placeholder: "# 見出し\n\n- リスト\n\n**太字** *斜体*",

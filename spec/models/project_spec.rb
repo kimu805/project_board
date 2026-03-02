@@ -191,6 +191,58 @@ RSpec.describe Project, type: :model do
   end
 
   # -------------------------
+  # role バリデーション
+  # -------------------------
+  describe "role バリデーション" do
+    it "memberは有効" do
+      expect(build_project(role: :member)).to be_valid
+    end
+
+    it "leaderは有効" do
+      expect(build_project(role: :leader)).to be_valid
+    end
+
+    it "roleがnilは無効" do
+      project = build_project
+      project.role = nil
+      expect(project).not_to be_valid
+    end
+  end
+
+  # -------------------------
+  # role enum
+  # -------------------------
+  describe "enum :role" do
+    it "member は 0" do
+      expect(Project.roles[:member]).to eq(0)
+    end
+
+    it "leader は 1" do
+      expect(Project.roles[:leader]).to eq(1)
+    end
+  end
+
+  # -------------------------
+  # monthly_salary
+  # -------------------------
+  describe "#monthly_salary" do
+    it "memberの月給は単価×0.65" do
+      project = build_project(unit_price: 700_000, role: :member)
+      expect(project.monthly_salary).to eq(455_000)
+    end
+
+    it "leaderの月給は単価×0.70" do
+      project = build_project(unit_price: 700_000, role: :leader)
+      expect(project.monthly_salary).to eq(490_000)
+    end
+
+    it "unit_priceがnilならnilを返す" do
+      project = build_project(unit_price: nil, role: :member)
+      expect(project.monthly_salary).to be_nil
+    end
+  end
+
+  # -------------------------
   # アソシエーション
   # -------------------------
   describe "アソシエーション" do

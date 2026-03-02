@@ -39,6 +39,14 @@
     </div>
   </div>
 
+  <div>
+    <%= form.label :role, "参画ロール", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>
+    <%= form.select :role,
+          Project.roles.keys.map { |k| [ I18n.t("enums.project.role.#{k}"), k ] },
+          {},
+          class: ["block w-full bg-navy-900 border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-warm-500/40 focus:border-warm-500/40 transition-all", project.errors[:role].any? ? "border-red-500/40" : "border-white/10"] %>
+  </div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
     <div>
       <%= form.label :start_date, "開始日", class: "block text-[11px] font-display font-bold tracking-widest text-gray-500 uppercase mb-2" %>

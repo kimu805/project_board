@@ -3,6 +3,7 @@ class Project < ApplicationRecord
 
   enum :work_style, { full_onsite: 0, remote_1day: 1, remote_2days: 2, remote_3days: 3, remote_4days: 4, full_remote: 5 }, validate: true
   enum :status, { upcoming: 0, active: 1, completed: 2 }, validate: true
+  enum :role, { member: 0, leader: 1 }, validate: true
 
   validates :name, presence: true
   validates :client_name, presence: true
@@ -10,6 +11,14 @@ class Project < ApplicationRecord
   validates :work_style, presence: true
   validates :start_date, presence: true
   validates :status, presence: true
+  validates :role, presence: true
+
+  ROLE_RATE = { "member" => 0.65, "leader" => 0.70 }.freeze
+
+  def monthly_salary
+    return nil if unit_price.blank?
+    (unit_price * ROLE_RATE[role]).round
+  end
 
   scope :search_by_keyword, ->(keyword) {
     return all if keyword.blank?

@@ -14,6 +14,7 @@ ja:
         tech_stack: 技術スタック
         status: 状態
         memo: メモ
+        role: 参画ロール
       user:
         name: 名前
         email: メールアドレス
@@ -40,6 +41,9 @@ ja:
         upcoming: 参画前
         active: 参画中
         completed: 終了
+      role:
+        member: メンバー
+        leader: リーダー
   errors:
     format: "%{attribute}%{message}"
     messages:

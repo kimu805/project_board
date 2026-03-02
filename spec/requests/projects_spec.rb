@@ -14,7 +14,7 @@ RSpec.describe "Projects", type: :request do
   let(:project_attrs) do
     { name: "基幹システム開発", client_name: "株式会社サンプル",
       unit_price: 600_000, work_style: "full_remote",
-      start_date: "2025-04-01", status: "active" }
+      start_date: "2025-04-01", status: "active", role: "member" }
   end
 
   let(:project)       { user.projects.create!(project_attrs) }
@@ -265,6 +265,38 @@ RSpec.describe "Projects", type: :request do
           project.update!(memo: nil)
           get project_path(project)
           expect(response.body).to include("メモを追加する")
+        end
+      end
+    end
+
+    describe "参画ロール機能" do
+      describe "GET /projects/:id/edit（編集フォーム）" do
+        it "role選択欄が表示される" do
+          get edit_project_path(project)
+          expect(response.body).to include("参画ロール")
+        end
+      end
+
+      describe "PATCH /projects/:id（ロール更新）" do
+        it "roleをleaderに更新できる" do
+          patch project_path(project), params: { project: { role: "leader" } }
+          expect(project.reload.role).to eq("leader")
+        end
+      end
+
+      describe "GET /projects/:id（詳細）" do
+        it "参画ロールと月給を表示する" do
+          get project_path(project)
+          expect(response.body).to include("メンバー")
+          expect(response.body).to include("月給")
+        end
+      end
+
+      describe "GET /projects（一覧）" do
+        it "案件カードに月給を表示する" do
+          project
+          get projects_path
+          expect(response.body).to include("月給")
         end
       end
     end

@@ -106,6 +106,11 @@
             <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <span class="text-gray-400 hidden" data-client-toggle-target="clientName"><%= project.client_name %></span>
               <span class="text-white font-display font-bold"><%= formatted_unit_price(project.unit_price) %></span>
+              <% if project.monthly_salary %>
+                <span class="text-warm-400 text-xs">
+                  月給 <%= number_to_currency(project.monthly_salary, unit: "¥", precision: 0, delimiter: ",") %>（<%= I18n.t("enums.project.role.#{project.role}") %>）
+                </span>
+              <% end %>
               <span class="inline-flex items-center gap-1 text-gray-500">
                 <%= work_style_icon(project) %>
                 <span><%= work_style_label(project) %></span>
